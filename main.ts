@@ -65,6 +65,24 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         }
     }
 })
+function isPXwinner (enemyBoats: Sprite[][], hitOrMissPX: Sprite[]) {
+    killCount = 0
+    for (let index = 0; index <= 2; index++) {
+        currentBoatBoomCounter = 0
+        for (let currentBoatSprite of enemyBoats[index]) {
+            for (let currentBoomSprite of hitOrMissPX) {
+                if (grid.spriteRow(currentBoomSprite) == grid.spriteRow(currentBoatSprite) && grid.spriteCol(currentBoomSprite) == grid.spriteCol(currentBoatSprite)) {
+                    currentBoatBoomCounter += 1
+                    break;
+                }
+            }
+        }
+        if (currentBoatBoomCounter == enemyBoats[index].length) {
+            killCount += 1
+        }
+    }
+    return killCount
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     rotateFlag = "nothing"
     grid.move(cursor, -1, 0)
@@ -146,7 +164,7 @@ function isHitOrMiss (enemyBoats: Sprite[][], hitOrMissPX: Sprite[]) {
                     `, SpriteKind.Projectile)
                 grid.place(boomSprite, grid.getLocation(cursor))
                 hitOrMissPX.push(boomSprite)
-                game.splash("" + currentPlayer + "   HIT!!")
+                game.splash("" + currentPlayer + "   HIT!!" + convertToText(isPXwinner(enemyBoats, hitOrMissPX)) + " Boates destroyed!")
                 return 1
             }
         }
@@ -571,6 +589,8 @@ function isOverlapping (boatSpriteArrayPX: Sprite[][]) {
 }
 let boomSprite: Sprite = null
 let iterator = 0
+let currentBoatBoomCounter = 0
+let killCount = 0
 let hitOrMissP2: Sprite[] = []
 let hitOrMissP1: Sprite[] = []
 let boatRotateArrayP2: string[] = []
